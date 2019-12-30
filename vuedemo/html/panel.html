@@ -1,0 +1,80 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+
+<body>
+<div id="app">
+    <panel type="primary" @say-title="parent">
+        <div slot="title">
+            这是一篇vue的使用
+        </div>
+        <div slot="content">
+            内容区
+            <p>组件的属性传递</p>
+            <p>slot的使用</p>
+            <p>ref的使用</p>
+            <p>nickTick的使用</p>
+        </div>
+        <div slot="floot">
+            作者：HJL
+        </div>
+    </panel>
+</div>
+<template id="panel">
+    <div class="panel col-lg-8 col-lg-offset-2 mt-2" :class="color">
+        <div class="panel-heading" ref="head">
+            <slot name="title"></slot>
+        </div>
+        <div class="panel-body">
+            <slot name="content"></slot>
+        </div>
+        <div class="panel-footer">
+            <slot name="floot">作者：佚名</slot>
+            <button @click="showTitle">查看标题</button>
+        </div>
+    </div>
+</template>
+<script src="../node_modules/vue/dist/vue.js"></script>
+
+<script>
+    let panel = {
+        props: {
+            type: {
+                default: 'default'
+            }
+        },
+        computed: {
+            color() {
+                return 'panel-' + this.type
+            }
+        },
+        template: '#panel',
+        methods: {
+            showTitle() {
+                this.$emit('say-title',this.$refs.head.innerText)
+            }
+        }
+    }
+    let vm = new Vue({
+        el: '#app',
+        data: {},
+        components: {
+            panel
+        },
+        methods: {
+            parent(title) {
+                console.log(title);
+            }
+        }
+    })
+</script>
+</body>
+
+</html>

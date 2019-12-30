@@ -1,0 +1,58 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+<!--编程式导航，在js中跳转页面-->
+<div id="app">
+    <!--         to='/home'-->
+    <router-link :to="{path:'/home'}">首页</router-link>
+    <router-link :to="{path:'/list'}">列表页</router-link>
+    <router-view></router-view>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    let home = {
+        template: '<div>首页<button @click="toList">去列表</button></div>',
+        methods:{
+            toList(){
+                //this.$router.push('/list');//强制跳转路径['/','/home','/list','/home']
+                this.$router.replace('/list');//路由替换，将当前的历史替换掉['/','/home','/list','/list']replace直接把/home替换了
+            }
+        }
+    };
+    let list = {
+        template: '<div>列表页<button @click="back">返回</button></div>',
+        methods:{
+            back(){
+                this.$router.go(-1);//返回某一级
+            }
+        }
+    };
+    let routes = [
+        {path: '', component: home},//默认展示的路由
+        {path: '/home', component: home},
+        {path: '/list', component: list},
+        //{path: '*', component: list}//这个地方路径不会变  只是切换了组件
+        {path:'*',redirect:'/home'}//路径切换组件也要变  404的时候
+    ]
+    let router = new VueRouter({
+        routes,
+        linkActiveClass: 'active'
+    })
+    let vm = new Vue({
+        el: '#app',
+        router,//每个组件都会拥有一个名字叫$router的属性(有r的放的都是方法) 还有一个名字叫$route(没r的放的都是属性)
+        data: {},
+    })
+</script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>练习</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	</head>
+	<body>
+		<!-- 父亲绑定一些事件 儿子触发这个时间兵传递参数给父亲（单项数据流=》永远都是父传子）父亲数据刷新 儿子数据就刷新 -->
+		<div id="app">
+			父亲{{money}}
+			<!-- child.$on('child-msg',things) -->
+			<child :m='money' @child-msg = 'things'></child>
+		</div>
+		<script src="../node_modules/vue/dist/vue.js"></script>
+		<script>
+			let vm = new Vue({
+				el: '#app',
+				data: {
+					money: 400
+				},
+				methods:{
+					things(val){
+						console.log(val);
+						this.money = 800;
+					}
+				},
+				components: {
+					child: {
+						props: { //属性名和data中的名字不能一样，校验时不能阻断代码的指向，只是警告
+							m: { //校验属性的类型，如果不带‘:’得到的肯定是字符串类型 :m='1' :m='true'
+								type: [String, Function, Object, Array, Number, Boolean],
+								//default:0,//可以给m赋予默认值，如果不传值的话 就为默认值
+								required: true, //此参数是必须传递，但不能和default同用
+								validator(val) { //第一个参数是当前传递的值，返回true表示通过返回false表示不通过
+									return val > 300;
+								}
+							}
+						},//对象的形式可以进行校验
+						methods:{
+							getmoney(val){
+								this.$emit('child-msg',val)//触发自己的自定义事件，让父亲的方法执行
+							}
+						},
+						//props:['m'],//this.m = 100;会在当前子组件声明一个叫m的属性值是父亲的
+						template: '<div>儿子{{m}}<button @click="getmoney(800)">要钱</button></div>'
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

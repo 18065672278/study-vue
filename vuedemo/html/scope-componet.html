@@ -1,0 +1,57 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+<div id="app">
+    <component1></component1>
+    <component2></component2>
+</div>
+<script src="../node_modules/vue/dist/vue.js"></script>
+
+<script>
+    //局部组件 使用三部曲 1.创建组件 2.注册组件 3.使用组件
+    //组件是相互独立的 不能直接跨作用域 实例也是一个组件，组件中拥有生命周期函数
+    let obj = {school:'hello'}//如果组件共用了数据 会导致同时更新（独立性）
+    //子组件不能直接使用父组件的数据（组件之间的数据交互）
+    //组件理论上可以无限嵌套
+    let component1 = {
+        template:'<div @click="fn">{{school}}</div>',
+        data(){
+            return obj
+        },
+        methods:{
+            fn(){
+                this.school = 'Hello component1!';
+            }
+        }
+    }
+    let component2 = {
+        template:'<div @click="fn1">{{school}}</div>',
+        data(){
+            return obj
+        },
+        methods:{
+            fn1(){
+                this.school = 'Hello component1!';
+            }
+        }
+    }
+    let vm = new Vue({
+        el: '#app',
+        components:{//全局组件用Vue.component(),局部使用components
+            component1, //handsome:handsome(CS6可以简写)
+            component2
+        },
+        data: {},
+    })
+</script>
+</body>
+
+</html>

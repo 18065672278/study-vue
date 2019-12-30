@@ -1,0 +1,42 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+
+<body>
+<div id="app"></div>
+<script src="../node_modules/vue/dist/vue.js"></script>
+<script src="../node_modules/jquery/dist/jquery.min.js"></script>
+<script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../node_modules/axios/dist/axios.js"></script>
+<script>
+    //生命周期的方法 beforeCreate(创建之前) created(创建后)
+    //              beforeMount(挂载之前/编译之前) mountd(挂载后)
+    //              beforeUpdata(更新之前)        updated(更新后)
+    //              beforeDestroy(销毁之前)       distroyed(销毁后)
+    let vm = new Vue({//根实例，初始化时，默认会调用很多方法（钩子函数/回调函数）
+        data: {a:1,},
+        beforeCreate() {//1.此方法一般用不到
+            //这个函数执行的时候是没有data以及method的
+        },
+        created(){//2.获取ajax，初始化操作
+          //这个函数执行的时候data和metho(绑定的数据有set和get)
+        },
+        template:'<div>{{a}}</div>',//4.如果有template属性,则用模板（template）替换掉外部html,只要有此属性app中的内容就没有意义了，只能有一个根元素，不能是文本节点
+        beforeMount() {},//5.没有什么实际意义
+        mounted(){},//6.真实Dom渲染完了，可以操作Dom
+        beforeUpdate() {},//7.基本不用
+        updated() {},//8.基本不用（可以用watch替换掉7和8）
+        beforeDestroy() {},//9.销毁前 可以清楚定时器，或者清楚事件绑定
+        destroyed() {}//10.销毁后
+    }).$mount('#app');//3.要保证有编译的元素，let vm=new Vue({}).$mount('#app')相当于vm.$mount('#app')
+</script>
+</body>
+
+</html>

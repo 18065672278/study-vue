@@ -1,0 +1,39 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+<div id="app">
+    <parent></parent>
+</div>
+<script src="../node_modules/vue/dist/vue.js"></script>
+
+<script>
+    let grandson = {template:'<div>grandson</div>'};
+    let son = {template:'<div>son<grandson></grandson></div>',
+        components:{
+            grandson
+        }};
+    let parent = {
+        template:'<div>parent<son></son></div>',
+        components:{
+            son
+        }
+    };
+    let vm = new Vue({
+        el: '#app',
+        data: {},
+        components: {
+            parent
+        }
+    })
+</script>
+</body>
+
+</html>

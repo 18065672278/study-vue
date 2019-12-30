@@ -1,0 +1,41 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+
+<div id="app">
+    <router-link to="/artical/1/a">文章1</router-link>
+    <router-link to="/artical/2/b">文章2</router-link>
+    <router-link to="/artical/3/c">文章3</router-link>
+    <router-view></router-view>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    let artical = {
+        template: '<div>第{{$route.params.c}}篇文章</div>',
+    }
+    //  /artical/1/a
+    //  /artical/:c/:a 会产生一个对象 =>{c:1,a:'a'} = this.$route.params
+    let routes = [{//路径参数 表示值必要要有，但是值死随机的
+        path: '/artical/:c/:a',
+        component: artical
+    }]
+    let router = new VueRouter({
+        routes
+    })
+    let vm = new Vue({
+        el: '#app',
+        router
+    })
+</script>
+</body>
+
+</html>

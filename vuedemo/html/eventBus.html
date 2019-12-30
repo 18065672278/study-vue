@@ -1,0 +1,69 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+<div id="app">
+    <brother1></brother1>
+    <brother2></brother2>
+</div>
+<script src="../node_modules/vue/dist/vue.js"></script>
+
+<script>
+    let EventBus = new Vue;
+    let brother1 = {
+        template: '<div>{{color}} <button @click="change">变绿</button></div>',
+        data() {
+            return {
+                color: '绿色',
+                old: '绿色'
+            }
+        },
+        methods:{
+            change(){
+                EventBus.$emit('changeGreen',this.old);
+            }
+        },
+        created(){
+            EventBus.$on('changeRed',(val)=>{
+                this.color = val;
+            })
+        }
+    }
+    let brother2 = {
+        template: '<div>{{color}} <button @click="change">变红</button></div>',
+        data() {
+            return {
+                color: '红色',
+                old: '红色'
+            }
+        },
+        methods:{
+            change(){
+                EventBus.$emit('changeRed',this.old);
+            }
+        },
+        created(){
+            EventBus.$on('changeGreen',(val)=>{
+                this.color = val;
+            })
+        }
+    }
+    let vm = new Vue({
+        el: '#app',
+        data: {},
+        components:{
+            brother1,
+            brother2
+        }
+    })
+</script>
+</body>
+
+</html>

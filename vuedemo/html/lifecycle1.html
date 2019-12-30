@@ -1,0 +1,49 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+<div id="app">
+    <child ref="child"></child>
+</div>
+<template id="child">
+    <div>
+        <li v-for="a in arr">{{a}}</li>
+    </div>
+</template>
+<script src="../node_modules/vue/dist/vue.js"></script>
+<!--子组件和父组件同时拥有mounted方法 会先走谁？-->
+<!--需要等待子组件挂载完成之后，在触发父组件的挂载-->
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {},
+        mounted() {
+            console.log('parent');
+            this.$nextTick(()=>{//想操作dom就加一个$nextTick
+                console.log(this.$refs.child.$el.innerHTML);
+            })
+        },
+        components: {
+            child: {
+                template: '#child',
+                data() {
+                    return {arr: [1, 2, 3]}
+                },
+                mounted() {
+                    console.log('child');
+                    this.arr = [4, 5, 6];//此处是异步渲染Dom
+                },
+            }
+        }
+    })
+</script>
+</body>
+
+</html>

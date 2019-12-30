@@ -1,0 +1,44 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+<div id="app">
+    <loading ref="load"></loading>
+</div>
+<script src="../node_modules/vue/dist/vue.js"></script>
+
+<script>
+    /*父组件调用子组件的方法*/
+    let loading = {
+        data(){
+            return {flag:true}
+        },
+        template:'<div v-show="flag">疯狂加载中。。。</div>',
+        methods:{
+            hide(){
+                this.flag = false;
+            }
+        }
+    }
+    let vm = new Vue({
+        el: '#app',
+        data: {},
+        mounted(){ //ref 如果放在组件上获取的死组件的实例而并不是组件的Dom元素
+                //this.$refs.load.hide()
+            this.$refs.load.$el.style.color = 'red';
+        },
+        components:{
+            loading
+        }
+    })
+</script>
+</body>
+
+</html>

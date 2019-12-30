@@ -1,0 +1,48 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+<!--组件分类： 1.页面级组件 一个页面是一个组件
+              2.基础组件  将可复用的部分分离处理
+    提高开发效率
+    方便重复使用
+    便于协同开发
+    更容易被管理和维护
+    一个自定义标签 vue就会把它看成一个组件 (自定义标签不包含现有的html标签),vue可以给这些标签赋予一定的意义
+-->
+<div id="app">
+    <my-handsome></my-handsome>
+    <Myhandsome></Myhandsome>
+</div>
+<script src="../node_modules/vue/dist/vue.js"></script>
+
+<script>
+    // 1.组件名不要带有大写 多个单词用‘-’连接
+    // 2.只要组件名和定义名字相同是可以的（仅限首字母大写）
+    // 3.HTML用短横线隔开命名， Js中用驼峰也是可以的
+
+    Vue.component('myHandsome',{//一个对象可以看成一个组件
+        template:'<div>{{msg}}</div>',
+        data(){//组件中的数据必须是函数类型  返回一个数据作为组件的数据
+            return {msg:'Hello Word!'}
+        }
+    })
+
+    //一般写插件的时候全局组件使用的比较多
+    //用法划分组件 全局组件 只要声明一次可以在任何地方使用
+    //            局部组件 必须告诉这个组件属于谁
+    let vm = new Vue({
+        el: '#app',
+        data: {},
+    })
+</script>
+</body>
+
+</html>

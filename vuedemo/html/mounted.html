@@ -1,0 +1,50 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+
+<body>
+<div id="app">
+<p ref="myp">{{msg}}</p>
+    <div v-for="a in arry" ref="arry">{{a}}</div>
+</div>
+<script src="../node_modules/vue/dist/vue.js"></script>
+<script src="../node_modules/jquery/dist/jquery.min.js"></script>
+<script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../node_modules/axios/dist/axios.js"></script>
+<script>
+    //this.$data vm上的数据
+    //this.$watch 监控
+    //this.$el  当前el元素
+    //this.$set 后加的属性实现响应式变化
+    //this.$options vm上的所有属性
+    //this.$nextTick() 异步方法，等待Dom渲染完成后来获取vm
+    let vm = new Vue({
+        el: '#app',
+        data: {msg:'Hello',arry:[1,2,3]},
+        mounted() {
+            //Js写法：console.log(document.getElementsByTagName('p')[0].innerHTML);
+            //Vue写法：（需要在标签加ref属性,且这个属性名固定的）如果DOM元素不是通过v-for循环出来的，只能获取一个 如果通过v-for循环出来的可以获取多个
+            console.log(this.$refs.myp);
+            console.log(this.$refs.arry);
+            this.arr = [1,2,3,4];
+            console.log(this.$refs.arry);//4个
+            console.log(this.$refs.arry.children.length);//3个 解决数据不一致的方法用this.$nextTick()
+            this.$nextTick(()=>{//如果数据变化后想获取真实的DOM中的内容，需等待页面加载完成后再去获取，所有的dom最好在this.$nextTick()内完成
+                console.log(this.$refs.arry);//4个
+                console.log(this.$refs.arry.children.length);//4个
+            })
+            //this.$nextTick()异步方法，等待Dom渲染完成后来获取vm
+            this.$nextTick(()=>{console.log(vm)})
+        }
+    })
+</script>
+</body>
+
+</html>

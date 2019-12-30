@@ -1,0 +1,209 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+    <style>
+        .position {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: red;
+        }
+
+        .del {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <div class="container-fluid">
+        <div class="row col-md-8 col-md-offset-2">
+            <div class="panel panel-default mt-2">
+                <div class="panel-body bg-warning">
+                    <input type="text" class="form-control" @keyup.13="keyup" v-model="input">
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" class="checkAll" v-model="checkAll">
+                            </th>
+                            <th>名字</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(input,index) in filterTodos">
+                            <td>
+                                <input type="checkbox" v-model="input.isSelected">
+                            </td>
+                            <td @dblclick="dblclick(input)" :class="{del:input.isSelected}">
+                                <span v-show="cur != input">
+                                    {{input.title}}
+                                </span>
+                                <input type="text" v-model="input.title" v-show="cur == input" v-focus="cur == input"
+                                       @keyup.13="cancel" @blur="cancel">
+                            </td>
+                            <td>
+                                <button class="btn btn-xs bg-danger" @click="del(input)">&xotime;</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>总件数</td>
+                            <td colspan="2">{{sum | toFixed(2) }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <ul class="nav nav-pills">
+                        <li role="presentation" v-for="(nav,index) in navs"
+                            :class="{active:hash===nav.href.slice(2)}"><a :href="nav.href">{{nav.title}}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <button v-color="falg">变色</button>
+        <div v-drag class="position"></div>
+    </div>
+</div>
+<script src="../node_modules/vue/dist/vue.js"></script>
+<script src="../node_modules/jquery/dist/jquery.min.js"></script>
+<script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../node_modules/axios/dist/axios.js"></script>
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            input: '',
+            cur: '',
+            falg: 'red',
+            hash: '',
+            inputList: [
+                {
+                    isSelected: false,
+                    title: '1'
+                }, {
+                    isSelected: false,
+                    title: '2'
+                }
+            ],
+            navs: []
+        },
+        watch: {
+            //watch只监控一层对象（对数组进行添加可以监控到，但是修改数组里面的数据监控不到）
+            //inputList(){}这种写法只监控一层对象
+            inputList: {
+                //这种写法可以监控多层，handle为固定写法
+                handler() {//默认写成函数，就相当于写了个handler
+                    //localStorage默认存的字符串，所以要先转成json
+                    localStorage.setItem('inputList', JSON.stringify(this.inputList));
+                }, deep: true
+            }
+        },
+        directives: {
+            focus(el, bindings) {
+                if (bindings.value) {
+                    el.focus();
+                }
+            },
+            color(el, bindings) {
+                el.style.background = bindings.value
+            },
+            drag(el) {
+                el.onmousedown = function (e) {
+                    var disX = e.pageX - el.offsetLeft;
+                    var disY = e.pageX = el.offsetTop;
+                    document.onmousemove = function (e) {
+                        el.style.left = e.pageX - disX + 'px';
+                        el.style.top = e.pageY - disY + 'px';
+                    }
+                    document.onmouseup = function () {
+                        document.onmousemove = document.onmouseup = null;
+                    }
+                    e.preventDefault();
+                }
+            }
+        },
+        filters: {
+            toFixed(input, num) {
+                return input.toFixed(num) + ' 件'
+            }
+        },
+        computed: {
+            filterTodos() {
+                if (this.hash === 'all') return this.inputList;
+                if (this.hash === 'finish') return this.inputList.filter(item => item.isSelected);
+                if (this.hash === 'unfinish') return this.inputList.filter(item => !item.isSelected);
+                return this.inputList
+            },
+            checkAll: {
+                get() {
+                    return this.inputList.every(item => item.isSelected);
+                },
+                set(val) {
+                    this.inputList.forEach(item => item.isSelected = val)
+                }
+            },
+            sum: {
+                get() {
+                    return this.inputList.length
+                }
+            }
+        },
+        created() {
+            this.getData();
+            //如果localStorage中有数据就用有的 没数据就用默认的
+            this.inputList = JSON.parse(localStorage.getItem('inputList')) || this.inputList;
+            //监控hash值的变化 如果页面有了hash值 重新刷新页面也要有hash值
+            this.hash = window.location.hash.slice(2) || 'all'
+            window.addEventListener('hashchange', () => {
+                //当hash值变化，重新操作记录的数据
+                this.hash = window.location.hash.slice(2)
+            }, false)
+        },
+        methods: {
+            cancel() {
+                this.cur = '';
+            },
+            dblclick(input) {
+                this.cur = input;
+            },
+            getData() {
+                axios.get('navs.json').then(res => {
+                    this.navs = res.data;
+                }, erro => {
+                    console.log(erro)
+                })
+            },
+            /*navClick(num) {
+                this.navs.forEach((item, i) => {
+                    if (i == num) {
+                        item.active = true;
+                    } else {
+                        item.active = false;
+                    }
+                })
+            },*/
+            keyup() {
+                this.inputList.push({isSelected: false, title: this.input})
+                this.input = '';
+            },
+            del(input) {
+                this.inputList = this.inputList.filter(item => item != input);
+            }
+        },
+
+    })
+</script>
+</body>
+
+</html>

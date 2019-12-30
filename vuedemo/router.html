@@ -1,0 +1,48 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <style>
+        .active{
+            color:red;
+        }
+    </style>
+</head>
+
+<body>
+<!--前后端分离 后端只负责提供接口供前端调用，页面跳转都是前端自己处理
+    hash模式 开发时使用hash不会导致404,并且不支持seo  h5的history.pushStatus 上线时使用h5
+-->
+<div id="app">
+    <!--router-view是一个全局组件可以直接使用-->
+    <router-link to="/home" tag="button">首页</router-link> <!--tag是可以直接设置显示标签的-->
+    <router-link to="/list">列表</router-link>
+    <router-view></router-view>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<!--必须放在vue.js的后面-->
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    let home = {template: '<div>首页</div>'};/*http://localhost:63342/vuedemo/router.html?_ijt=7hslfkr14q904nfjtndf73e356#/home*/
+    let list = {template: '<div>列表页</div>'};/*http://localhost:63342/vuedemo/router.html?_ijt=7hslfkr14q904nfjtndf73e356#/list*/
+    let routes = [//路由的映射表 配置路径和组件的关系
+        {path:'/home',component: home},//配置的关系就是页面级组件
+        {path:'/list',component: list}//路径必须加‘/’
+    ]
+    let router = new VueRouter({
+        //mode:'history',    H5模式
+        routes,
+        linkActiveClass:'active'//更改默认样式的类名 默认为router-link-active
+    });
+    let vm = new Vue({
+        el: '#app',
+        router
+    })
+</script>
+</body>
+
+</html>

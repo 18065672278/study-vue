@@ -1,0 +1,49 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="node_modules/animate.css/animate.css">
+    <style>
+        .active {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <router-link to="/home">首页</router-link>
+    <router-link to="/list">列表</router-link>
+    <!--mode="in-out"动画的模式-->
+    <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+        <!--要缓存谁就把谁包起来-->
+        <keep-alive>
+            <router-view style="position: absolute;top: 30px;left: 0px;width: 100%;text-indent: 30px;"></router-view>
+        </keep-alive>
+    </transition>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    let home = {template: '<div style="background: aliceblue">首页</div>'};
+    let list = {template: '<div style="background: antiquewhite">列表页</div>'};
+    let routes = [
+        {path: '/home', component: home},
+        {path: '/list', component: list}
+    ]
+    let router = new VueRouter({
+        routes,
+        linkActiveClass: 'active'
+    });
+    let vm = new Vue({
+        el: '#app',
+        router
+    })
+</script>
+</body>
+
+</html>

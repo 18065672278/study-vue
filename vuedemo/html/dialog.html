@@ -1,0 +1,75 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>练习</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <style>
+        .mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.35);
+        }
+
+        .dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            /*margin: -200px 0 0 -200px;*/
+            transform: translate3d(-50%,-50%,0);
+            background: #fff;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <button @click="showModal()">
+        弹框
+    </button>
+    <!--如果show的值为true则显示 为false则隐藏  @close对应的函数死点击关闭按钮时触发的函数-->
+    <modal :show="isShow" @close-click="closeModal"></modal>
+</div>
+<template id="dialog">
+    <div class="mask" v-if="show">
+        <div class="dialog">
+            <button @click="close">关闭</button>
+        </div>
+    </div>
+</template>
+<script src="../node_modules/vue/dist/vue.js"></script>
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {isShow:false},
+        methods:{
+            showModal(){
+                this.isShow = true;
+            },
+            closeModal(){
+                this.isShow = false;
+            }
+        },
+        components:{
+            modal:{
+                props:['show'],//接受了父组件的数据
+                template:'#dialog',
+                methods: {
+                    close(){
+                        this.$emit('close-click');
+                    }
+                }
+            }
+        }
+    })
+</script>
+</body>
+
+</html>
