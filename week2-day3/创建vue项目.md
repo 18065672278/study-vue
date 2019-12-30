@@ -45,33 +45,33 @@
 ```
     npm install babel-preset-stage-0 --save-dev
 ```
-##解析样式
+## 解析样式
 - css-loader将css解析成模块，将解析的内容插入到style标签内（style-loader）
 ```
     npm install css-loader style-loader --save-dev
 ```
 
-##less,sass,stylus(预处理语言)
+## less,sass,stylus(预处理语言)
 - less-loader less
 - sass-loader
 - stylus-loader
 ```
     npm install less-loader less css-loader style-loader --save-dev
 ```
-##解析图片
+## 解析图片
 - file-loader 
 - url-loader(是依赖于file-loader)
 ```
     npm install file-loader url-loader --save-dev
 ```
 
-##需要解析HTML插件
+## 需要解析HTML插件
 -插件的作用是以我们自己的HTML为模板将打包后的结果自动引入到HTML中，产出到dist目录下
 ```
     npm install html-webpack-plugin --save-dev
 ```
 
-##webpack-dev-server
+## webpack-dev-server
 - 这里面内置了服务,可以帮我们启动一个端口号，当代码更新时可以自动打包（在内存中打包？），代码有变化就重新执行
 ```$xslt
     npm install webpack-dev-server --save-dev
