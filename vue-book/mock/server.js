@@ -21,14 +21,14 @@ function write(data, cb) {//写入内容
 
 let pageSize = 5;//每一页显示五个
 http.createServer((req, res) => {
-  //解决跨域问题
+  /*//解决跨域问题
+  //让options请求快速返回*/
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
   res.setHeader('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
   res.setHeader("X-Powered-By", '3.2.1');
-  if (req.method == 'OPTIONS') return res.end();/*让options请求快速返回*/
-
-  let {pathname, query} = url.parse(req.url, true);//把query转换成对象
+  if (req.method == 'OPTIONS') return res.end();
+  let {pathname, query} = url.parse(req.url, true);//true 把query转换成对象
 
   if (pathname === '/page') {
     let offset = parseInt(query.offset) || 0;//拿到当前前端传递的值
@@ -49,6 +49,7 @@ http.createServer((req, res) => {
     res.setHeader('Content-Type', 'application/json;charset=utf8');
     return res.end(JSON.stringify(sliders))
   }
+
   if (pathname === '/hot') {
     read(function (books) {
       let hot = books.reverse().slice(0, 6);
@@ -59,6 +60,7 @@ http.createServer((req, res) => {
     })
     return;
   }
+
   if (pathname === '/book') {//对书的增删改查
     let id = parseInt(query.id);//取出的是字符串
     switch (req.method) { //?id=1
@@ -86,7 +88,6 @@ http.createServer((req, res) => {
           let book = JSON.parse(str);
           read(function (books) {
             book.bookId = books.length ? books[books.length - 1].bookId + 1 : 1;
-            console.log(books);
             books.push(book);
             console.log(books.push(book));
             write(books, function () {//将数据写回
@@ -127,4 +128,21 @@ http.createServer((req, res) => {
         break;
     }
   }
+
+  //读取一个路局
+  /*fs.stat('.' + pathname, function (err, stats) {
+    if (err) {
+      /!*res.statusCode = 404;
+      res.end('Not Found');*!/
+      fs.createReadStream('index.html').pipe(res);
+    } else {
+      if (stats.isDirectory()) {
+        let p = require('path').join('.' + pathname, './index.html');
+        fs.createReadStream(p).pipe(res);
+      } else {
+        //如果是目录会报错
+        fs.createReadStream('.' + pathname).pipe(res);
+      }
+    }
+  })*/
 }).listen(3000);

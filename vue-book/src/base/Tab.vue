@@ -6,15 +6,15 @@
     </router-link>
     <router-link to="/list">
       <i class="iconfont icon-listpress"></i>
-      <span>列表页</span>
+      <span>列表</span>
     </router-link>
     <router-link to="/collect">
       <i class="iconfont icon-shoucang"></i>
-      <span>收藏页</span>
+      <span>购物车</span>
     </router-link>
     <router-link to="/add">
       <i class="iconfont icon-tianjia"></i>
-      <span>添加页</span>
+      <span>添加</span>
     </router-link>
   </div>
 </template>

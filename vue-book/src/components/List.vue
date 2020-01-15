@@ -5,12 +5,17 @@
       <ul>
         <router-link v-for="(book,index) in bookList" :to="{name:'Detail',params:{bid:book.bookId}}" :key="index"
                      tag="li">
-          <img :src="book.bookCover" :alt="book.bookInfo">
+          <div>
+            <img v-lazy="book.bookCover" :alt="book.bookInfo">
+          </div>
           <div>
             <h4>{{book.bookName}}</h4>
             <p>{{book.bookInfo}}</p>
             <b>￥ {{book.bookPrice}}</b>
-            <button @click.stop="remove(book.bookId)">删除</button>
+            <div class="btn-list">
+              <button @click.stop="remove(book.bookId)">删除</button>
+              <button @click.stop>购买</button>
+            </div>
           </div>
         </router-link>
       </ul>
@@ -33,6 +38,53 @@
         /*offset偏移量，hasMore是否有更多*/
         bookList: [], offset: 0, hasMore: true, isLoading: false
       }
+    },
+    mounted() {
+      let scroll = this.$refs.scroll;
+      let top = scroll.offsetTop;
+      let distance = 0;
+      let isMove = false;
+      scroll.addEventListener('touchstart', (e) => {
+        //滚动条在最顶端 并且滚动距离为0时（当前盒子在顶端） 才继续走
+        if (scroll.scrollTop != 0 || scroll.offsetTop != top) return
+        let start = e.touches[0].pageY;//手指点击的开始
+        let move = (e) => {
+          isMove = true;
+          let current = e.touches[0].pageY;
+          distance = current - start;//求拉动的距离  负的不要
+          if (distance > 0) {
+            distance = distance > 50 ? 50 : distance;
+            scroll.style.top = distance + top + 'px';
+          } else {
+            //如果不在考虑范围内  则要移除touchmove和touchend
+            scroll.removeEventListener('touchmove', move);
+            scroll.removeEventListener('touchend', end);
+          }
+        }
+        let end = (e) => {
+          if(!isMove)return;
+          isMove = false;
+          clearInterval(this.timer1);
+          this.timer1 = setInterval(() => {
+            if (distance <= 0) {
+              clearInterval(this.timer1);
+              distance = 0;
+              scroll.style.top = top + 'px';
+              this.bookList = [];//先清空数据
+              this.offset = 0;
+              this.getBookList();
+              scroll.removeEventListener('touchmove', move);
+              scroll.removeEventListener('touchend', end);
+              return;
+            }
+            distance -= 1;
+            scroll.style.top = top + distance + 'px';
+          }, 1)
+        };
+        scroll.addEventListener('touchmove', move);
+        scroll.addEventListener('touchend', end);
+      });
+
     },
     created() {
       this.getBookList();
@@ -114,6 +166,11 @@
           border: none;
           border-radius: 10px;
           outline: none;
+        }
+
+        .btn-list {
+          display: flex;
+          justify-content: space-around;
         }
       }
     }

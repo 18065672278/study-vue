@@ -49,6 +49,7 @@
     methods: {
       async getData() {
         let [sliders, hotBooks] = await getAll();//直接一次性调两个接口
+        console.log(sliders, hotBooks)
         this.sliders = sliders;
         this.hotBooks = hotBooks;
         //...轮播图和热门图书已经获取完成
